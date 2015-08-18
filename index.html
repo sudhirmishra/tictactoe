@@ -1,0 +1,94 @@
+<html>
+
+<head>
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<script src="game.js"></script>
+
+<style>
+ button {
+    height:90px;
+    width:90px;
+    margin:3px;
+    font-size:50px !important;
+ }
+</style>
+</head>
+
+<body class="body">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-12">
+        <div class="page-header">
+  <h1>TIC TAC TOE <small><i>(Object Orientation in <a href="game.js">Javascript</a>)</i></small></h1>
+</div>
+</div>
+    </div>
+    <table class="">
+        <tr>
+            <td>
+                <button data-index='1' class="btn btn-default btn-lg"></button>
+            </td>
+            <td>
+                <button data-index='2' class="btn btn-default btn-lg"></button>
+            </td>
+            <td>
+                <button data-index='3' class="btn btn-default btn-lg "></button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button data-index='4' class="btn btn-default btn-lg "></button>
+            </td>
+            <td>
+                <button data-index='5' class="btn btn-default btn-lg "></button>
+            </td>
+            <td>
+                <button data-index='6' class="btn btn-default btn-lg"></button>
+            </td>                                      
+        </tr>                                          
+        <tr>                                           
+            <td>                                       
+                <button data-index='7' class="btn btn-default btn-lg"></button>
+            </td>                                      
+            <td>                                       
+                <button data-index='8' class="btn btn-default btn-lg"></button>
+            </td>                                      
+            <td>                                       
+                <button data-index='9' class="btn btn-default btn-lg"></button>
+            </td>
+        </tr>
+        
+    </table>    
+</body>
+<script>
+
+buttons = [];
+
+elements = document.getElementsByTagName('button');
+
+for(var i=0;i<elements.length;i++){
+    buttons.push(new Button(i,elements[i]));
+    elements[i].addEventListener('click',play);
+}
+
+player1 = new Player("X");
+player2 = new Player("O");
+
+player1.active = true;
+
+players = [player1,player2]
+
+board = new Board(buttons,players);
+
+
+
+</script>
+</html>
