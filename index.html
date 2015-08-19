@@ -2,83 +2,270 @@
 
 <head>
     <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
 
 <!-- Optional theme -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+
+<script src="js/jquery.min.js"></script>
 
 <!-- Latest compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 
-<script src="game.js"></script>
+<script src="js/game.js"></script>
 
 <style>
- button {
+ .cell {
     height:90px;
     width:90px;
     margin:3px;
     font-size:50px !important;
  }
 </style>
+<title>TIC TAC TOE</title>
 </head>
 
 <body class="body">
     <div class="container">
-    <div class="row">
-    <div class="col-lg-12">
-        <div class="page-header">
-  <h1>TIC TAC TOE <small><i>(Object Orientation in <a href="game.js">Javascript</a>)</i></small></h1>
-</div>
-</div>
-    </div>
-    <table class="">
-        <tr>
-            <td>
-                <button data-index='1' class="btn btn-default btn-lg"></button>
-            </td>
-            <td>
-                <button data-index='2' class="btn btn-default btn-lg"></button>
-            </td>
-            <td>
-                <button data-index='3' class="btn btn-default btn-lg "></button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button data-index='4' class="btn btn-default btn-lg "></button>
-            </td>
-            <td>
-                <button data-index='5' class="btn btn-default btn-lg "></button>
-            </td>
-            <td>
-                <button data-index='6' class="btn btn-default btn-lg"></button>
-            </td>                                      
-        </tr>                                          
-        <tr>                                           
-            <td>                                       
-                <button data-index='7' class="btn btn-default btn-lg"></button>
-            </td>                                      
-            <td>                                       
-                <button data-index='8' class="btn btn-default btn-lg"></button>
-            </td>                                      
-            <td>                                       
-                <button data-index='9' class="btn btn-default btn-lg"></button>
-            </td>
-        </tr>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-header">
+                    <h1>TIC TAC TOE <small><i>(Object Orientation in <a href="game.js">Javascript</a>)</i></small></h1>
+                </div>
+            </div>
+            <div class="pull-right">
+            
+                <button onclick="location.reload()" class="btn btn-default btn-danger">Restart <span class="glyphicon glyphicon-repeat"></span></button>
+            </div>
+        </div>
+        <div class="col-lg-6">
+        <table class="">
+            <tr>
+                <td>
+                    <button data-index='1' class="btn btn-default btn-lg cell cell"></button>
+                </td>
+                <td>
+                    <button data-index='2' class="btn btn-default btn-lg cell"></button>
+                </td>
+                <td>
+                    <button data-index='3' class="btn btn-default btn-lg cell "></button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button data-index='4' class="btn btn-default btn-lg cell "></button>
+                </td>
+                <td>
+                    <button data-index='5' class="btn btn-default btn-lg cell "></button>
+                </td>
+                <td>
+                    <button data-index='6' class="btn btn-default btn-lg cell"></button>
+                </td>                                      
+            </tr>                                          
+            <tr>                                           
+                <td>                                       
+                    <button data-index='7' class="btn btn-default btn-lg cell"></button>
+                </td>                                      
+                <td>                                       
+                    <button data-index='8' class="btn btn-default btn-lg cell"></button>
+                </td>                                      
+                <td>                                       
+                    <button data-index='9' class="btn btn-default btn-lg cell"></button>
+                </td>
+            </tr>
+            
+        </table>
+        </div>
+        <div class="col-lg-4">
+            <div id="result" style="display:none">
+                <div class="fade in alert alert-success alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <strong>Winner!</strong> <span id="symbol"></span> wins the game ! 
+                </div>
+            </div>
+            <div id="draw" style="display:none">
+                <div class="fade in alert alert-info alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <strong>Draw :!</strong>
+                </div>
+            </div>
+            
+        </div>
+        </div>
+        <hr/>
+        <div class="container">
+        <h1>Source Code </h1>
+            <div class="row">
+                <div class="col-lg-12">
+                    <pre>
+// Cell representation 
+var Button = function(element){
+    // Reference to DOM element
+    this.element = element;
+    // Make UI changes for a particular cell
+    this.markChange = function(symbol){
+        this.element.innerText = symbol 
+        this.element.className = this.element.className + " disabled"
+    };    
+}
+
+// Depends on Board class,
+var Player = function(symbol){
+    this.active = false; 
+    this.symbol = symbol;
+    this.name = "Player "+symbol;
+    
+    this.move = function(index){
+        // Mark the change on Button class
+        board.buttons[index-1].markChange(this.symbol);
+        // Store the move
+        return board.storeMove(index,symbol);
+    }
+}
+
+var Board = function(buttons,players){
+    
+    this.buttons = buttons
+    this.players = players
+    
+    this.active = true;
+    
+    this.cells = [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
+
+    this.moveCount = 0;
+    
+    this.storeMove = function(linearIndex,symbol){
+        // Increment the move counter
+        this.moveCount++;
+        // Convert linear index to 2D index
+        row = Math.floor((linearIndex - 1 )/ 3);
+        column = (linearIndex - 1 ) % 3;
+        // Numeric representation of symbol
+        cellValue = symbol == "X" ? 1 : 0
         
-    </table>    
-</body>
-<script>
+        // Store the move
+        this.cells[row][column] = cellValue
+        
+        // After Minimum number of 4 moves, finding out the winner
+        if( this.moveCount > 4 ){
+        
+            // Check row
+            
+            for ( var i=0;i<3;i++){
+                if(this.cells[i][column] != cellValue){
+                    break;
+                }
+                if(i == 2){
+                   return symbol;
+                }
+            }
+            
+            // Check column
+            
+            for ( var i=0;i<3;i++){
+                if(this.cells[row][i] != cellValue){
+                    break;
+                }
+                if(i == 2){
+                
+                   return symbol;
+                }
+            }
+            
+            // Check diagonal
+            
+            for ( var i=0;i<3;i++){
+                if(this.cells[i][i] != cellValue){
+                    break;
+                }
+                if(i == 2){
+                   return symbol 
+                }
+            }
+            
+            // Check anti diagonal
+            
+            for ( var i=0;i<3;i++){
+                if(this.cells[i][2-i] != cellValue){
+                    break;
+                }
+                if(i == 2){
+                   return symbol 
+                }
+            }
+            
+            // Check for draw
+            if ( this.moveCount == 9 ){
+                return "Draw";
+            }
+        }
+    }
+}
+
+
+// Main function that delegates events from the UI to the classes
+function play(){
+    
+    var index = this.getAttribute('data-index');
+    
+    // The result is declared or the cell is already marked then do nothing
+    if(this.className.indexOf('disabled') > 0 || board.active == false){
+        return;
+    }
+    
+    // Alternating of players after each move
+    if(board.players[0].active == true){
+        activeIndex = 0;
+        inactiveIndex = 1;
+    }else {
+        activeIndex = 1;        
+        inactiveIndex = 0;
+    }
+    
+    // Processing the click to a game move
+    var result = board.players[activeIndex].move(index);
+    
+    board.players[activeIndex].active = false;
+    board.players[inactiveIndex].active = true; 
+    
+    if(result == board.players[0].symbol){
+        // Player 0 won the game
+        board.active = false;
+        console.log("Winner : "+board.players[0].name);
+        
+        jQuery('#symbol').text(board.players[0].name);
+        jQuery('#result').show(100);
+        
+    }else if (result == board.players[1].symbol){
+        // Player 1 won the game
+        board.active = false;
+        console.log("Winner : "+board.players[1].name);       
+        
+        jQuery('#symbol').text(board.players[1].name);
+        jQuery('#result').show(100);
+    
+    }else if(result == "Draw"){
+        board.active = false;
+        console.log("Game Draw");
+        
+        jQuery('#draw').show(100);
+    }
+    
+}
+
+
+
+elements = document.getElementsByClassName('cell');
 
 buttons = [];
 
-elements = document.getElementsByTagName('button');
-
-for(var i=0;i<elements.length;i++){
-    buttons.push(new Button(i,elements[i]));
+// Create cells for the board
+for(var i=0;i   &lt elements.length;i++){
+    buttons.push(new Button(elements[i]));
     elements[i].addEventListener('click',play);
 }
 
+// Create two players with first player as symbol X
 player1 = new Player("X");
 player2 = new Player("O");
 
@@ -86,9 +273,15 @@ player1.active = true;
 
 players = [player1,player2]
 
+// Create a board with cells and players
 board = new Board(buttons,players);
 
-
+                    </pre>
+                </div>
+            </div>
+        </div>
+</body>
+<script>
 
 </script>
 </html>

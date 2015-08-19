@@ -1,14 +1,26 @@
-var Button = function(index,element){
-    
-    this.index = index
+// Cell representation 
+var Button = function(element){
+    // Reference to DOM element
     this.element = element;
-    
+    // Make UI changes for a particular cell
     this.markChange = function(symbol){
-        // If the button is disabled, do nothing        
         this.element.innerText = symbol 
         this.element.className = this.element.className + " disabled"
-    };
+    };    
+}
+
+// Depends on Board class,
+var Player = function(symbol){
+    this.active = false; 
+    this.symbol = symbol;
+    this.name = "Player "+symbol;
     
+    this.move = function(index){
+        // Mark the change on Button class
+        board.buttons[index-1].markChange(this.symbol);
+        // Store the move
+        return board.storeMove(index,symbol);
+    }
 }
 
 var Board = function(buttons,players){
@@ -21,23 +33,20 @@ var Board = function(buttons,players){
     this.cells = [[-1,-1,-1],[-1,-1,-1],[-1,-1,-1]];
 
     this.moveCount = 0;
-    this.status = "Begin";
-    
     
     this.storeMove = function(linearIndex,symbol){
-        // 1 is 00  row = (1-1)/3 = 0; column = (1-1)%3 = 0
-        // 2 is 01  row = (2-1)/3 = 0; column = (2-1)%3 = 1
-        // 3 is 02  row = (3-1)/3 = 0; column = (3-1)%3 = 2
-        
         // Increment the move counter
         this.moveCount++;
+        // Convert linear index to 2D index
         row = Math.floor((linearIndex - 1 )/ 3);
         column = (linearIndex - 1 ) % 3;
-        
+        // Numeric representation of symbol
         cellValue = symbol == "X" ? 1 : 0
         
+        // Store the move
         this.cells[row][column] = cellValue
         
+        // After Minimum number of 4 moves, finding out the winner
         if( this.moveCount > 4 ){
         
             // Check row
@@ -85,6 +94,7 @@ var Board = function(buttons,players){
                 }
             }
             
+            // Check for draw
             if ( this.moveCount == 9 ){
                 return "Draw";
             }
@@ -92,26 +102,18 @@ var Board = function(buttons,players){
     }
 }
 
-var Player = function(symbol){
-    this.active = false // OF NO USE 
-    this.symbol = symbol;
-    this.name = "Player "+symbol;
-    
-    this.move = function(index){
-        // Mark the change on Button class
-        board.buttons[index-1].markChange(this.symbol);
-        // Store the move
-        return board.storeMove(index,symbol);
-    }
-}
 
+// Main function that delegates events from the UI to the classes
 function play(){
+    
     var index = this.getAttribute('data-index');
     
+    // The result is declared or the cell is already marked then do nothing
     if(this.className.indexOf('disabled') > 0 || board.active == false){
         return;
     }
     
+    // Alternating of players after each move
     if(board.players[0].active == true){
         activeIndex = 0;
         inactiveIndex = 1;
@@ -120,6 +122,7 @@ function play(){
         inactiveIndex = 0;
     }
     
+    // Processing the click to a game move
     var result = board.players[activeIndex].move(index);
     
     board.players[activeIndex].active = false;
@@ -128,26 +131,47 @@ function play(){
     if(result == board.players[0].symbol){
         // Player 0 won the game
         board.active = false;
-        console.log("Winner : "+board.players[0].symbol);
+        console.log("Winner : "+board.players[0].name);
+        
+        jQuery('#symbol').text(board.players[0].name);
+        jQuery('#result').show(100);
+        
     }else if (result == board.players[1].symbol){
         // Player 1 won the game
         board.active = false;
-        console.log("Winner : "+board.players[1].symbol);       
+        console.log("Winner : "+board.players[1].name);       
+        
+        jQuery('#symbol').text(board.players[1].name);
+        jQuery('#result').show(100);
+    
     }else if(result == "Draw"){
         board.active = false;
         console.log("Game Draw");
+        
+        jQuery('#draw').show(100);
     }
     
 }
 
-// Each board has two players
-// One of the player is active
-// Board has 9 buttons
-// Buttons has index and symbol associated with it
-// Board checks if three in a line or not
-// Button has the function to make the UI changes
-// Player has the function move, which takes input index / button reference
 
 
-// Players makes the move, move gets the ref of the element
-// Button marks the move
+elements = document.getElementsByClassName('cell');
+
+buttons = [];
+
+// Create cells for the board
+for(var i=0;i<elements.length;i++){
+    buttons.push(new Button(elements[i]));
+    elements[i].addEventListener('click',play);
+}
+
+// Create two players with first player as symbol X
+player1 = new Player("X");
+player2 = new Player("O");
+
+player1.active = true;
+
+players = [player1,player2]
+
+// Create a board with cells and players
+board = new Board(buttons,players);
