@@ -283,5 +283,27 @@ board = new Board(buttons,players);
 </body>
 <script>
 
+
+
+elements = document.getElementsByClassName('cell');
+
+buttons = [];
+
+// Create cells for the board
+for(var i=0;i<elements.length;i++){
+    buttons.push(new Button(elements[i]));
+    elements[i].addEventListener('click',play);
+}
+
+// Create two players with first player as symbol X
+player1 = new Player("X");
+player2 = new Player("O");
+
+player1.active = true;
+
+players = [player1,player2]
+
+// Create a board with cells and players
+board = new Board(buttons,players);
 </script>
 </html>
